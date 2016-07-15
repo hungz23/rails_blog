@@ -11,7 +11,7 @@
 			</ol>
 			<%= will_paginate @comments %>
 		<% end %>
-		<% if logged_in? %>
+		<% if logged_in? and (current_user.following?(@entry.user) or current_user == @entry.user)%>
 			<section class="entry_form">
 				<%= render 'shared/comment_form' %>
 			</section>
