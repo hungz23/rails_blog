@@ -2,7 +2,14 @@ class EntriesController < ApplicationController
 	before_action :logged_in_user, only: [:create, :destroy]
 	before_action :correct_user, only: :destroy
 	def index
-		    @entries = Entry.paginate(page: params[:page])
+		@entries = Entry.paginate(page: params[:page])
+	end
+	def show
+		@entry = Entry.find(params[:id])
+    	@comments = @entry.comments.paginate(page: params[:page])
+    	if logged_in?
+    		@comment = current_user.comments.new 
+    	end
 	end
 	def create
 		@entry = current_user.entries.build(entry_params)
@@ -16,8 +23,8 @@ class EntriesController < ApplicationController
 	end
 	def destroy
 		@entry.destroy
-		flash[:success] = "Micropost deleted"
-		redirect_to request.referrer || root_url
+		flash[:success] = "Entry deleted"
+		redirect_to root_url
 	end
 	private
 		def entry_params
